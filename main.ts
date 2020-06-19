@@ -17,17 +17,10 @@ function ShowNormal () {
 }
 function CheckReadyState () {
     if (pins.digitalReadPin(DigitalPin.P1) == 1) {
-        basic.showLeds(`
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            `)
-        serial.writeLine("")
-        serial.writeLine("Bl-Touch error, trying to recover")
         Startposition()
         Deploy()
+        serial.writeLine("")
+        serial.writeLine("Bl-Touch error, trying to recover")
         if (pins.digitalReadPin(DigitalPin.P1) == 1) {
             serial.writeLine("")
             serial.writeLine("ERROR can not recover Bl-Touch device")
