@@ -18,11 +18,11 @@ function ShowNormal () {
 function CheckReadyState () {
     if (pins.digitalReadPin(DigitalPin.P1) == 1) {
         basic.showLeds(`
-            . . # . .
-            . . # . .
-            . . # . .
             . . . . .
-            . . # . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
             `)
         serial.writeLine("")
         serial.writeLine("Bl-Touch error, trying to recover")
