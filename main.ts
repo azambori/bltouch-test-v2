@@ -40,6 +40,7 @@ function ShowError () {
     basic.pause(1000)
 }
 input.onButtonPressed(Button.A, function () {
+    StatusRUNSTOP = 0
     if (StatusSWMODEONOFF == 0) {
         StatusSWMODEONOFF = 1
         basic.showString("SW mode")
@@ -47,7 +48,7 @@ input.onButtonPressed(Button.A, function () {
         StatusSWMODEONOFF = 0
         basic.showString("HW mode")
     }
-    StatusRUNSTOP = 0
+    basic.pause(5000)
     Startposition()
 })
 function Deploy () {
