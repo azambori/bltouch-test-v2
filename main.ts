@@ -16,7 +16,7 @@ function ShowNormal () {
         `)
 }
 function CheckReadyState () {
-    if (pins.digitalReadPin(DigitalPin.P1) == 3) {
+    if (pins.digitalReadPin(DigitalPin.P1) == 1) {
         Startposition()
         Deploy()
         serial.writeLine("")
@@ -37,7 +37,7 @@ function ShowError () {
     serial.writeString(" ERROR_")
     serial.writeNumber(Count_Error)
     basic.showIcon(IconNames.No)
-    basic.pause(1000)
+    basic.pause(5000)
 }
 input.onButtonPressed(Button.A, function () {
     StatusRUNSTOP = 0
@@ -59,7 +59,7 @@ function Deploy () {
 function ShowOk () {
     serial.writeString(" OK")
     basic.showIcon(IconNames.Yes)
-    basic.pause(5000)
+    basic.pause(1000)
 }
 input.onButtonPressed(Button.AB, function () {
     StatusRUNSTOP = 0
@@ -112,18 +112,16 @@ let ServoDELAY = 500
 pins.setPull(DigitalPin.P1, PinPullMode.PullUp)
 pins.servoSetPulse(AnalogPin.P2, servocenterposition)
 basic.pause(ServoDELAY)
-pins.servoWritePin(AnalogPin.P0, BlTouchReset)
-basic.pause(ServoDELAY)
+Startposition()
 serial.redirectToUSB()
 basic.showLeds(`
     . . . . .
     . . . . .
     . . . . .
     . . . . .
-    . . . . .
+    # # . # #
     `)
 Count_Error = 0
-Startposition()
 basic.forever(function () {
     if (StatusRUNSTOP == 1) {
         ShowNormal()
@@ -136,7 +134,7 @@ basic.forever(function () {
         ERROR = 1
         for (let ServoAngle = 0; ServoAngle <= MaxAnlge; ServoAngle++) {
             pins.servoSetPulse(AnalogPin.P2, servocenterposition - ServoAngle)
-            basic.pause(2)
+            basic.pause(1)
             OUTPUT = ServoAngle
             if (pins.digitalReadPin(DigitalPin.P1) == 1) {
                 ERROR = 0
@@ -145,7 +143,6 @@ basic.forever(function () {
         }
         pins.servoSetPulse(AnalogPin.P2, servocenterposition)
         basic.pause(ServoDELAY)
-        Deploy()
         WriteLog(Count, OUTPUT)
         if (ERROR == 1) {
             Count_Error += 1
