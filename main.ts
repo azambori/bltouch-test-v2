@@ -1,10 +1,3 @@
-function Startposition () {
-    basic.pause(BlTouchDELAY)
-    pins.servoWritePin(AnalogPin.P0, BlTouchReset)
-    basic.pause(BlTouchDELAY)
-    pins.servoWritePin(AnalogPin.P0, BlTouchStow)
-    basic.pause(BlTouchDELAY)
-}
 function ShowNormal () {
     serial.writeLine("")
     basic.showLeds(`
@@ -14,24 +7,6 @@ function ShowNormal () {
         . . . . .
         # # # # #
         `)
-}
-function CheckReadyState () {
-    if (pins.digitalReadPin(DigitalPin.P1) == 1) {
-        Startposition()
-        Deploy()
-        serial.writeLine("")
-        serial.writeLine("Bl-Touch error, trying to recover")
-        if (pins.digitalReadPin(DigitalPin.P1) == 1) {
-            serial.writeLine("")
-            serial.writeLine("ERROR can not recover Bl-Touch device")
-            serial.writeLine("Please Hard Reset the device")
-            serial.writeLine("Program STOPPED")
-            basic.showIcon(IconNames.Sad)
-            while (true) {
-            	
-            }
-        }
-    }
 }
 function ShowError () {
     serial.writeString(" ERROR_")
@@ -49,7 +24,6 @@ input.onButtonPressed(Button.A, function () {
         basic.showString("HW mode")
     }
     basic.pause(5000)
-    Startposition()
 })
 function Deploy () {
     pins.servoWritePin(AnalogPin.P0, BlTouchDeploy)
@@ -65,7 +39,6 @@ input.onButtonPressed(Button.AB, function () {
     StatusRUNSTOP = 0
     pins.servoWritePin(AnalogPin.P0, BlTouchReset)
     basic.showIcon(IconNames.SmallHeart)
-    Startposition()
     basic.showIcon(IconNames.Heart)
     basic.pause(2000)
     basic.clearScreen()
@@ -92,7 +65,6 @@ let ERROR = 0
 let Count = 0
 let Count_Error = 0
 let BltouchSWMODE = 0
-let BlTouchStow = 0
 let BlTouchDeploy = 0
 let BlTouchReset = 0
 let StatusRUNSTOP = 0
@@ -104,7 +76,7 @@ BlTouchDELAY = 350
 StatusRUNSTOP = 0
 BlTouchReset = 160
 BlTouchDeploy = 10
-BlTouchStow = 90
+let BlTouchStow = 90
 BltouchSWMODE = 60
 let MaxAnlge = 300
 let servocenterposition = 1450
@@ -112,7 +84,11 @@ let ServoDELAY = 500
 pins.setPull(DigitalPin.P1, PinPullMode.PullUp)
 pins.servoSetPulse(AnalogPin.P2, servocenterposition)
 basic.pause(ServoDELAY)
-Startposition()
+basic.pause(BlTouchDELAY)
+pins.servoWritePin(AnalogPin.P0, BlTouchReset)
+basic.pause(BlTouchDELAY)
+pins.servoWritePin(AnalogPin.P0, BlTouchStow)
+basic.pause(BlTouchDELAY)
 serial.redirectToUSB()
 basic.showLeds(`
     . . . . .
@@ -128,7 +104,21 @@ if (StatusRUNSTOP == 1) {
         ShowNormal()
         Count += 1
         Deploy()
-        CheckReadyState()
+        if (pins.digitalReadPin(DigitalPin.P1) == 1) {
+            Deploy()
+            serial.writeLine("")
+            serial.writeLine("Bl-Touch error, trying to recover")
+            if (pins.digitalReadPin(DigitalPin.P1) == 1) {
+                serial.writeLine("")
+                serial.writeLine("ERROR can not recover Bl-Touch device")
+                serial.writeLine("Please Hard Reset the device")
+                serial.writeLine("Program STOPPED")
+                basic.showIcon(IconNames.Sad)
+                while (true) {
+                	
+                }
+            }
+        }
         if (StatusSWMODEONOFF == 1) {
             SwmodeOn()
         }
