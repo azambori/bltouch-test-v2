@@ -88,6 +88,8 @@ function WriteLog (Log_Line: number, Log_Angle: number) {
     serial.writeNumber(Log_Angle)
 }
 let OUTPUT = 0
+let ERROR = 0
+let Count = 0
 let Count_Error = 0
 let BltouchSWMODE = 0
 let BlTouchStow = 0
@@ -96,11 +98,9 @@ let BlTouchReset = 0
 let StatusRUNSTOP = 0
 let BlTouchDELAY = 0
 let StatusSWMODEONOFF = 0
+let StatusDEPLOYSTOW = 0
 StatusSWMODEONOFF = 1
 BlTouchDELAY = 350
-let ERROR = 0
-let Count = 0
-let StatusDEPLOYSTOW = 0
 StatusRUNSTOP = 0
 BlTouchReset = 160
 BlTouchDeploy = 10
@@ -123,7 +123,8 @@ basic.showLeds(`
     `)
 Count_Error = 0
 basic.forever(function () {
-    if (StatusRUNSTOP == 1) {
+    let ServoAngle: number;
+if (StatusRUNSTOP == 1) {
         ShowNormal()
         Count += 1
         Deploy()
@@ -132,14 +133,16 @@ basic.forever(function () {
             SwmodeOn()
         }
         ERROR = 1
-        for (let ServoAngle = 0; ServoAngle <= MaxAnlge; ServoAngle++) {
+        ServoAngle = 0
+        while (ServoAngle <= MaxAnlge) {
             pins.servoSetPulse(AnalogPin.P2, servocenterposition - ServoAngle)
-            basic.pause(1)
+            basic.pause(5)
             OUTPUT = ServoAngle
             if (pins.digitalReadPin(DigitalPin.P1) == 1) {
                 ERROR = 0
                 break;
             }
+            ServoAngle += 1
         }
         pins.servoSetPulse(AnalogPin.P2, servocenterposition)
         basic.pause(ServoDELAY)
