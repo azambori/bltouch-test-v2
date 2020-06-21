@@ -16,7 +16,7 @@ function ShowNormal () {
         `)
 }
 function CheckReadyState () {
-    if (pins.digitalReadPin(DigitalPin.P1) == 1) {
+    if (pins.digitalReadPin(DigitalPin.P1) == 3) {
         Startposition()
         Deploy()
         serial.writeLine("")
@@ -123,6 +123,7 @@ basic.showLeds(`
     . . . . .
     `)
 Count_Error = 0
+Startposition()
 basic.forever(function () {
     if (StatusRUNSTOP == 1) {
         ShowNormal()
@@ -144,6 +145,7 @@ basic.forever(function () {
         }
         pins.servoSetPulse(AnalogPin.P2, servocenterposition)
         basic.pause(ServoDELAY)
+        Deploy()
         WriteLog(Count, OUTPUT)
         if (ERROR == 1) {
             Count_Error += 1
