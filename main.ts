@@ -61,6 +61,7 @@ function WriteLog (Log_Line: number, Log_Angle: number) {
     serial.writeNumber(Log_Angle)
 }
 let OUTPUT = 0
+let ServoAngle = 0
 let ERROR = 0
 let Count = 0
 let Count_Error = 0
@@ -99,8 +100,7 @@ basic.showLeds(`
     `)
 Count_Error = 0
 basic.forever(function () {
-    let ServoAngle: number;
-if (StatusRUNSTOP == 1) {
+    if (StatusRUNSTOP == 1) {
         ShowNormal()
         Count += 1
         Deploy()
@@ -126,7 +126,7 @@ if (StatusRUNSTOP == 1) {
         ServoAngle = 0
         while (ServoAngle <= MaxAnlge) {
             pins.servoSetPulse(AnalogPin.P2, servocenterposition - ServoAngle)
-            basic.pause(5)
+            basic.pause(1)
             OUTPUT = ServoAngle
             if (pins.digitalReadPin(DigitalPin.P1) == 1) {
                 ERROR = 0
